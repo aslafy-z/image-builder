@@ -128,3 +128,18 @@
 - name: Remove '--no-tpm --no-efivars' from nullboot post install script
   ansible.builtin.command: sed -i 's/nullbootctl --no-tpm --no-efivars/nullbootctl/' /var/lib/dpkg/info/nullboot.postinst
   when: packer_build_name is search('cvm')
+
+- name: Add the user 'debug' with password 'debug'
+  ansible.builtin.user:
+    state: present
+    name: debug
+    password: '$6$/dM3mJKkwM8jcGtx$g/bwUkhWkKYuyW6rBWKYZC2W.KOBiBruOC5hgwruEKDFzUFeBeKIIYSSdzz0uw503oh5RQrNISrZ3gmBiERIJ/' # debug
+
+- name: >-
+    Allow the 'debug' user to use sudo without a password for any comamnd
+  community.general.sudoers:
+    state: present
+    name: debug
+    user: debug
+    commands: ALL
+    nopassword: true
